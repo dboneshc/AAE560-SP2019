@@ -75,6 +75,7 @@ NetworkMeasures(comm_net);
 js_wos=WorkOrder.empty;
 
 %Now populate work order with desired number and due dates
+% createWO(number of WO,...
 [ js_wos, cust ] = createWO(2, 10, cust, js_wos);
 %[ js_wos, cust ] = createWO(5, 20, cust, js_wos);
 
