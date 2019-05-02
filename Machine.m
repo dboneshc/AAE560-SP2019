@@ -42,14 +42,15 @@ classdef Machine < handle
                 for i=1:length(obj)
                     
                 %deterministic: op_actual_duration=op_plan_duration stochastich: op_actual_duration PDF determined
-                %obj(i).op_actual_duration=obj(i).op_plan_duration;
+                obj(i).op_actual_duration=obj(i).op_plan_duration;
 
-                if obj(i).set_actual==1
-                    %this is the call for the stochastic process - this is the worst case 
-                    obj(i).op_actual_duration=poissrnd(obj(i).op_plan_duration);
-                    %set flag to 0, re-initialze to 1 once work is complete
-                    obj(i).set_actual=0;
-                end
+                %*** Stochastic Machining Process ***
+%                 if obj(i).set_actual==1
+%                     %this is the call for the stochastic process - this is the worst case 
+%                     obj(i).op_actual_duration=poissrnd(obj(i).op_plan_duration);
+%                     %set flag to 0, re-initialze to 1 once work is complete
+%                     obj(i).set_actual=0;
+%                 end
                 
                 %pull in the routing table for the specific WO
                 r_table=js_wos(obj(i).wo_id).routing.Edges;
