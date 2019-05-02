@@ -66,6 +66,13 @@ function readTime(mTimer,~)
 
    %calculate SV
    js_wos = calcSV(js_wos);%calulates SV for each step and total SV
+   
+   %have master schedule write to the command line which operations should have been performed this clock cycle
+    planningMessage(js_sch,count,{sup.functional_group});
+    disp(['End Clock Cycle: ', num2str(count)]);
+    
+    %pausing to let the user see the output
+    temp=input('- Press Enter to Continue -');
 end
 
 %Stopping function - used to alert the user what time job shop activity is 
