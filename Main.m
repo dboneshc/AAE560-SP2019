@@ -1,4 +1,5 @@
 clear all;
+clear classes;
 close all;
 clc;
 
