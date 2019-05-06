@@ -278,12 +278,20 @@ classdef JobShopSchedule < handle
                 r_index=[r_index; find(strcmp(ms_e_table.OperationWO,fun_grp_vec(i)))];
             end
             
-            ES_time_index=find(ms_e_table.ES(r_index)>=current_time);
-            LF_time_index=find(ms_e_table.LF(r_index(ES_time_index))<=current_time);
+            ES_time_index=find(ms_e_table.ES(r_index)<=current_time);
+            LF_time_index=find(ms_e_table.LF(r_index(ES_time_index))>=current_time);
             
-            disp(['Planning Message: At time ', num2str(current_time),' WO ', num2str(ms_e_table.EdgeWO(r_index(LF_time_index))),...
-                ' Operation ',char(ms_e_table.OperationWO(LF_time_index)),' should be worked with an Early Start of ',...
-                num2str(ms_e_table.ES(r_index(LF_time_index))),'.']);
+            if length(LF_time_index)>1
+                for i=1:length(LF_time_index)
+                    disp(['Planning Message: At time ', num2str(current_time),' WO ', num2str(ms_e_table.EdgeWO(r_index(ES_time_index(LF_time_index(i))))),...
+                        ' Operation ',char(ms_e_table.OperationWO(r_index(ES_time_index(LF_time_index(i))))),' should be worked with an Early Start of ',...
+                        num2str(ms_e_table.ES(r_index(ES_time_index(LF_time_index(i))))),'.']);
+                end
+            else
+                disp(['Planning Message: At time ', num2str(current_time),' WO ', num2str(ms_e_table.EdgeWO(r_index(ES_time_index(LF_time_index)))),...
+                        ' Operation ',char(ms_e_table.OperationWO(r_index(ES_time_index(LF_time_index)))),' should be worked with an Early Start of ',...
+                        num2str(ms_e_table.ES(r_index(ES_time_index(LF_time_index)))),'.']);
+            end
             
             ms_e_table(sort(r_index),{'EdgeWO','OperationWO','ES','EF','LS','LF'})
         end
