@@ -23,7 +23,12 @@ classdef Supervisor < handle
             for i=1:length(obj)
                 %clear out the job_queue object - concerned that a short table will "corrupt data"
                 obj(i).job_queue=struct('wo_id',[],'es',[],'ls',[],'ef',[],'lf',[],'duration',[]);
+                disp(['Supervisor Class getWork(): Supervisor ',char(obj(i).functional_group),' job queue:']);
                 obj(i).job_queue=l_fun_getWork(ms_e_table,obj(i).functional_group,obj(i).job_queue);
+                disp('Work Order:');
+                obj(i).job_queue.wo_id
+                disp('Early Start:');
+                obj(i).job_queue.es
             end
         end
         
@@ -54,6 +59,10 @@ classdef Supervisor < handle
                     %second condition is that the current time falls between the operation's early start and late start times determined by the master schedule
                     if strcmp(js_wos(obj(i).job_queue.wo_id(ct2)).routing.Edges.Status(wo_op_r_index),'planned') &&...
                         all([obj(i).job_queue.es(ct2)<=current_time, current_time<=obj(i).job_queue.ls(ct2)])
+                    
+                    %*** A 3rd condition is needed to check to ensure the
+                    %previous operation is 'complete' ***
+                    
                     %obj(i).job_queue.es(ct2)<=current_time %this only works for serial WOs and Operations       
 
 
