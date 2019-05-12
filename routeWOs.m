@@ -39,7 +39,7 @@ function readTime(mTimer,~)
         %find all machines in a particular functional group that are idle
         f_grp_idle_machines=findobj(mach,'functional_group',sup(i).functional_group,'-and','status','idle');
         %passing f_grp_machines back from the assign work function should update the m_arr object array accordingly
-        [f_grp_idle_machines, sup, js_wos]=assignWork(sup,f_grp_idle_machines,js_wos,i,count);
+        [f_grp_idle_machines, sup, js_wos]=assignWork(sup,f_grp_idle_machines,js_wos,i,count,js_sch);
         clear f_grp_machines
     end
     clear i
