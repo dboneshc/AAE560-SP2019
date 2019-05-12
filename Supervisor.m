@@ -32,18 +32,38 @@ classdef Supervisor < handle
             end
         end
         
-        function [f_grp_idle_machines obj js_wos]=assignWork(obj,f_grp_idle_machines,js_wos,i,current_time)
+        function [f_grp_idle_machines obj js_wos]=assignWork(obj,f_grp_idle_machines,js_wos,i,current_time,js_sch)
             %check to see if an idle machine just completed work - gather info
             
             %check the number of idle machines
             n_idle_machines=length(f_grp_idle_machines);
             %determine the number of available wo operations to be worked
             n_open_ops=0;
+            wo_id=[];
+            wo_end_nodes=[];
             for j=1:length(js_wos)
                 %find the jth WO that contains the ith supervisor functional group
                 index=find(strcmp(js_wos(j).routing.Edges.Operation,obj(i).functional_group));
                 %sum the number of planned operations
                 n_open_ops=sum(strcmp(js_wos(j).routing.Edges.Status(index),'planned'))+n_open_ops;
+                %find the WO unique ID that corresponds to planned operations for the funcitonal group
+                if ~isempty(index)
+                    wo_id=[wo_id; ones(1,length(index))*js_wos(j).unique_id];
+                    wo_end_nodes=[wo_end_nodes; js_wos(j).routing.EndNodes(index,:)];
+                end
+            end
+            
+            %find the preceding WO/Operations and determine their statuses
+            for j=1:length(wo_id)
+                %master schedule source node for edge of WO/Operation
+                ms_source_node={[num2str(wo_id(j)),'.',num2str(wo_end_nodes(j))]};
+                ms_pred_nodes=predecessors(js_sch.master_schedule,ms_source_node);
+                for k=1:length(ms_pred_nodes)
+                    %***
+                    %check all the predecessor edges to determine if they
+                    %are complete or not
+                    %***
+                end
             end
             
             %assign work to the machines limited by either the # of machines or open operations
@@ -53,7 +73,7 @@ classdef Supervisor < handle
                 ct2=1; %job_queue counter
                 while ct<=1 && ct2<=length(obj(i).job_queue.wo_id)  %counter inequality set to 1 b/c only a single operation will be allocated, the "k" loop is sequencing through idle machines - the while loop attempts to match an idle machine to a WO operation to be matched
                     %find the row index in work order routing edges table that corresponds to the current functional group of obj(i)
-                    wo_op_r_index=find(strcmp(js_wos(obj(i).job_queue.wo_id(ct2)).routing.Edges.Operation,obj(i).functional_group));
+                    wo_op_r_index=find(strcm  p(js_wos(obj(i).job_queue.wo_id(ct2)).routing.Edges.Operation,obj(i).functional_group));
                     
                     %first condition is that WO status is planned
                     %second condition is that the current time falls between the operation's early start and late start times determined by the master schedule
